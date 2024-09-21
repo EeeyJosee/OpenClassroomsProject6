@@ -2,20 +2,22 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-const Credential = require('./models/credential');
+const signupRoutes = require('./routes/signup');
+const loginRoutes = require('./routes/login');
+
 // const Sauce = require('./models/sauce');
 
 // grab DB details from .env file
 dotenv.config();
-const username = process.env.DB_USERNAME;
-const password = process.env.DB_PASSWORD;
-const host = process.env.DB_HOST;
+const mongoUsername = process.env.DB_USERNAME;
+const mongoPassword = process.env.DB_PASSWORD;
+const mongoHost = process.env.DB_HOST;
 
 // start up express
 const app = express();
 
 // connect to MongoDb
-mongoose.connect(`mongodb+srv://${username}:${password}@${host}`)
+mongoose.connect(`mongodb+srv://${mongoUsername}:${mongoPassword}@${mongoHost}`)
     .then(() => {
         console.log('Successfully connected to MongoDB Atlas!');
     })
@@ -35,48 +37,10 @@ app.use((request, response, next) => {
 });
 
 // signup route
-app.post('/api/auth/signup', (request, response, next) => {
-    const credential = new Credential({
-        email: request.body.email,
-        password: request.body.password
-    });
-    credential.save().then(
-        () => {
-            response.status(201).json({
-                message: 'Post saved successfully!'
-            })
-        }
-    ).catch(
-        (error) => {
-            response.status(400).json({
-                error: error
-            });
-        }
-    );
-});
-
+app.use('/api/auth/signup', signupRoutes);
 
 // login route
-// app.post('/api/auth/login', (request, response, next) => {
-//     const credential = new Credential({
-//         email: request.body.email,
-//         password: request.body.password
-//     });
-//     credential.save().then(
-//         () => {
-//             response.status(201).json({
-//                 message: 'Post saved successfully!'
-//             })
-//         }
-//     ).catch(
-//         (error) => {
-//             response.status(400).json({
-//                 error: error
-//             });
-//         }
-//     );
-// });
-
+// app.use('/api/auth/login', loginRoutes);
 
 // sauce route
 // app.post('/api/sauces', (request, response, next) => {
@@ -99,20 +63,34 @@ app.post('/api/auth/signup', (request, response, next) => {
 //     );
 // });
 
-app.get('/api/sauces')
+// app.get('/api/auth/signup:id', (request, response, next) => {
+//     Credential.findOne({
+//         _id: request.params.id
+//     }).then(
+//         (credential) => {
+//             response.status(200).json(crednetial);
+//         }
+//     ).catch(
+//         (error) => {
+//             response.datatis(404).json({
+//                 error: error
+//             });
+//         }
+//     );
+// })
 
-app.use('/api/auth/signup', (request, response, next) => {
-    Credential.find().then(
-        (credentials) => {
-            response.status(200).json(credentials);
-        }
-    ).catch(
-        (error) => {
-            response.status(400).json({
-                error: error
-            });
-        }
-    );
-});
+// app.use('/api/auth/signup', (request, response, next) => {
+//     Credential.find().then(
+//         (credentials) => {
+//             response.status(200).json(credentials);
+//         }
+//     ).catch(
+//         (error) => {
+//             response.status(400).json({
+//                 error: error
+//             });
+//         }
+//     );
+// });
 
 module.exports = app;
