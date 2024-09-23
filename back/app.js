@@ -40,7 +40,7 @@ app.use((request, response, next) => {
 app.use('/api/auth/signup', signupRoutes);
 
 // login route
-// app.use('/api/auth/login', loginRoutes);
+app.use('/api/auth/login', loginRoutes);
 
 // sauce route
 // app.post('/api/sauces', (request, response, next) => {
