@@ -2,10 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-const signupRoutes = require('./routes/signup');
-const loginRoutes = require('./routes/login');
+const userRoutes = require('./routes/user');
 
-// const Sauce = require('./models/sauce');
 
 // grab DB details from .env file
 dotenv.config();
@@ -36,11 +34,8 @@ app.use((request, response, next) => {
     next();
 });
 
-// signup route
-app.use('/api/auth/signup', signupRoutes);
-
-// login route
-app.use('/api/auth/login', loginRoutes);
+// login and signup
+app.use('/api/auth', userRoutes);
 
 // sauce route
 // app.post('/api/sauces', (request, response, next) => {
