@@ -12,7 +12,7 @@ module.exports = (request, response, next) => {
         }
     } catch {
         response.status(401).json({
-            error: new Error('Invalid request!');
+            error: new Error('Invalid request!')
         });
     }
 };

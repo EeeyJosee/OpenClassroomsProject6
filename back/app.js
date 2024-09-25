@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const path = require('path');
 
 const userRoutes = require('./routes/user');
-
+// const sauceRoutes = require('./routes/sauce');
 
 // grab DB details from .env file
 dotenv.config();
@@ -34,58 +35,13 @@ app.use((request, response, next) => {
     next();
 });
 
+// don't know what's up with this
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 // login and signup
 app.use('/api/auth', userRoutes);
 
 // sauce route
-// app.post('/api/sauces', (request, response, next) => {
-//     const sauce = new Sauce({
-//         sauce: request.body.sauce,
-//         image: request.body.image
-//     });
-//     sauce.save().then(
-//         () => {
-//             response.status(201).json({
-//                 message: 'Post saved successfully!'
-//             })
-//         }
-//     ).catch(
-//         (error) => {
-//             response.status(400).json({
-//                 error: error
-//             });
-//         }
-//     );
-// });
-
-// app.get('/api/auth/signup:id', (request, response, next) => {
-//     Credential.findOne({
-//         _id: request.params.id
-//     }).then(
-//         (credential) => {
-//             response.status(200).json(crednetial);
-//         }
-//     ).catch(
-//         (error) => {
-//             response.datatis(404).json({
-//                 error: error
-//             });
-//         }
-//     );
-// })
-
-// app.use('/api/auth/signup', (request, response, next) => {
-//     Credential.find().then(
-//         (credentials) => {
-//             response.status(200).json(credentials);
-//         }
-//     ).catch(
-//         (error) => {
-//             response.status(400).json({
-//                 error: error
-//             });
-//         }
-//     );
-// });
+// app.use('/api/sauces', sauceRoutes);
 
 module.exports = app;
