@@ -18,7 +18,7 @@ exports.signup = (request, response, next) => {
             ).catch(
                 (error) => {
                     response.status(500).json({
-                        error: error
+                        error: 'User was not added!'
                     });
                 }
             );
@@ -31,14 +31,14 @@ exports.login = (request, response, next) => {
         (user) => {
             if (!user) {
                 return response.status(401).json({
-                    error: new Error('User not found!')
+                    error: 'User not found!'
                 });
             }
             bcrypt.compare(request.body.password, user.password).then(
                 (valid) => {
                     if (!valid) {
                         return response.status(401).json({
-                            error: new Error('Incorrect password!')
+                            error: 'Incorrect password!'
                         });
                     }
                     const token = jwt.sign(
@@ -53,7 +53,7 @@ exports.login = (request, response, next) => {
             ).catch(
                 (error) => {
                     response.status(500).json({
-                        error: error
+                        error: 'Something went wrong with the token!'
                     });
                 }
             );
@@ -61,7 +61,7 @@ exports.login = (request, response, next) => {
     ).catch(
         (error) => {
             response.status(500).json({
-                error: error
+                error: 'User not found!'
             });
         }
     );

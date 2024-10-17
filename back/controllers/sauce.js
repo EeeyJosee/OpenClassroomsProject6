@@ -10,7 +10,7 @@ exports.getAllSauces = (request, response, next) => {
     ).catch(
         (error) => {
             response.status(400).json({
-                error: error
+                error: 'Sauces were not found!'
             });
         }
     );
@@ -27,7 +27,7 @@ exports.getOneSauce = (request, response, next) => {
     ).catch(
         (error) => {
             response.status(400).json({
-                error: error
+                error: 'Sauce was not found!'
             });
         }
     );
@@ -53,13 +53,13 @@ exports.createSauce = (request, response, next) => {
     sauce.save().then(
         () => {
             response.status(201).json({
-                message: 'Post saved successfully!'
+                message: 'New sauce created!'
             });
         }
     ).catch(
         (error) => {
             response.status(400).json({
-                error: error
+                error: 'Sauce was not created!'
             });
         }
     );
@@ -81,9 +81,16 @@ exports.likeSauce = (request, response, next) => {
             usersLiked = sauce.usersLiked;
             usersDisliked = sauce.usersDisliked;
             switch (like) {
+                // like the sauce
                 case 1:
+                    if (usersLiked.includes(user)) {
+                        return response.status(401).json({
+                            error: 'Sauce has already been liked!'
+                        });
+                    }
                     if (!usersLiked.includes(user)) {
                         usersLiked.push(user);
+                        usersDisliked.remove(user);
                         sauce.save().then(
                             () => {
                                 response.status(201).json({
@@ -93,15 +100,22 @@ exports.likeSauce = (request, response, next) => {
                         ).catch(
                             (error) => {
                                 response.status(400).json({
-                                    error: error
+                                    error: 'Sauce could not be liked!'
                                 });
                             }
                         );
                     };
                     break;
+                // dislike the sauce
                 case -1:
+                    if (usersDisliked.includes(user)) {
+                        return response.status(401).json({
+                            error: 'Sauce has already been disliked!'
+                        });
+                    }
                     if (!usersDisliked.includes(user)) {
                         usersDisliked.push(user);
+                        usersLiked.remove(user);
                         sauce.save().then(
                             () => {
                                 response.status(201).json({
@@ -111,14 +125,14 @@ exports.likeSauce = (request, response, next) => {
                         ).catch(
                             (error) => {
                                 response.status(400).json({
-                                    error: error
+                                    error: 'Sauce could not be disliked!'
                                 });
                             }
                         );
                     };
                     break;
+                // remove (dis)like from the sauce
                 case 0:
-                    if (usersLiked.includes(user) || usersDisliked.includes(user)) {
                         usersLiked.remove(user);
                         usersDisliked.remove(user);
                         sauce.save().then(
@@ -130,15 +144,14 @@ exports.likeSauce = (request, response, next) => {
                         ).catch(
                             (error) => {
                                 response.status(400).json({
-                                    error: error
+                                    error: 'Like could not be reset!'
                                 });
                             }
                         );
-                    };
                     break;
                 default:
                     return response.status(401).json({
-                        error: 'Like request is invalid!'
+                        error: 'Like is not of the values -1, 0, or 1!'
                     });
             }
             // add up total number of likes & dislikes
@@ -180,13 +193,13 @@ exports.modifySauce = (request, response, next) => {
     Sauce.updateOne({ _id: request.params.id }, sauce).then(
         () => {
             response.status(201).json({
-                message: 'Sauce updated successfully!'
+                message: 'Sauce has been updated!'
             });
         }
     ).catch(
         (error) => {
             response.status(400).json({
-                error: error
+                error: 'Sauce was not updated!'
             });
         }
     );
@@ -215,7 +228,7 @@ exports.deleteSauce = (request, response, next) => {
             ).catch(
                 (error) => {
                     response.status(400).json({
-                        error: error.message
+                        error: 'Sauce could not be deleted!'
                     });
                 }
             );
