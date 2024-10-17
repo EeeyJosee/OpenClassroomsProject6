@@ -35,12 +35,10 @@ app.use((request, response, next) => {
     next();
 });
 
-// don't know what's up with this
+// allows images to be uploaded
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
 // login and signup
 app.use('/api/auth', userRoutes);
-
 // sauce route
 app.use('/api/sauces', sauceRoutes);
 
